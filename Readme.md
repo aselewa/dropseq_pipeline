@@ -6,32 +6,29 @@ Each experiment differs and the pipeline might need to be adjusted to accommodat
 
 Below are steps that are common to all experiments and outlines of analysis that are commonly used.
 
+## Preparing Environment
 
-## Setting up
-#### 1. Start interactive session to set up the folders, data, and the dropseq pipeline
-```bash
-#log into midway2
-ssh CnetID@midway2.rcc.uchicago.edu
-
-#on midway2 start an interactive session
-sinteractive  --partition=broadwl
-```
-#### 2. Create a compute environment using conda (This step can be skipped when re-running an analysis)
+#### 1. Create a compute environment using conda (This step can be skipped when re-running an analysis)
 
 The environment needs to be created only once. It will be activated when running the dropseq pipeline.
 
 ```bash
 module load Anaconda3
 
-conda env create --file /project2/gilad/spott/Pipelines/dropseq_pipeline/environment.yaml
+conda env create --file .../dropseq_pipeline/environment.yaml
 ```
 
 To update the environment, you can run the following command:
 ```bash
-conda env update --file /project2/gilad/spott/Pipelines/dropseq_pipeline/environment.yaml
+conda env update --file .../dropseq_pipeline/environment.yaml
 ```
 
+#### 2. Edit the config_hg38.yaml file
+
+Edit the config_hg38.yaml file so that Snakemake can find the right files
+
 ## Prepare data:
+
 #### 1. Create a project directory in your directory on midway2
 ```bash
 mkdir your_project
@@ -51,13 +48,14 @@ cp path/to/fastq/*fastq.gz .
 cd ../../
 ```
 
-## Run dropseq pipeline
 
-### Option 1: Human samples, hg38
+## Run dropseq pipeline
 
 This command will run the Submit_snakemake.sh and pass the location of your project directory.
 
 ```bash
 .../dropseq_pipeline/snakemake.batch "--config proj_dir=/project2/PI/CNETID/Path/to/your/dir/"
 ```
+
+
 
