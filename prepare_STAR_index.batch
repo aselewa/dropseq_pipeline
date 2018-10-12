@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#SBATCH --job-name=make_STAR_index
+#SBATCH --output=snakelog.out
+#SBATCH --time=24:00:00
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --tasks-per-node=4
+
+module load Anaconda3
+
+source activate dropseq
+
+#prepare hg38 index for standard dropseq, gtf file includes pseudogenes
+STAR --runThreadN 2 --runMode genomeGenerate --genomeDir /project2/gilad/spott/Pipelines/dropseq_pipeline/STAR_indeces/hg38_noalt_juncGencodeV27_61 --genomeFastaFiles /project2/gilad/spott/Pipelines/dropseq_pipeline/STAR_indeces/hg38_UCSC/hg38_ucsc.fa --sjdbGTFfile /project2/gilad/spott/Pipelines/dropseq_pipeline/STAR_indeces/hg38_UCSC/gencode.v27.annotation.gtf --sjdbGTFtagExonParentGene gene_id --sjdbOverhang 51

@@ -1,0 +1,17 @@
+Seurat_test.Rmd
+Pipeline_runs/
+output/*
+STAR_indeces/*
+.snakemake/*
+.DS_Store
+._.DS_Store
+._Dropseq_pipeline_setup.Rmd
+._Preparation_of_annotation_data.md
+._Snakefile
+._Snakefile_fixed
+._Submit_snakemake.sh
+._cluster.json
+._config_hg38.yaml
+._environment.yaml
+._prepare_STAR_index.batch
+._snakemake.batch

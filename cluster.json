@@ -1,0 +1,66 @@
+{
+    "__default__" :
+    {
+      "mem" : 2000,
+      "n" : 1,
+	    "tasks" : 1,
+      "name" : "{rule}-{wildcards}",
+	    "logfile": "log/snake-{rule}-{wildcards}-%j.out"
+    },
+    "fastqc" :
+    {
+	    "mem" : 8000
+    },
+    "fastq_merge_r1" :
+    {
+	    "mem": 16000
+    },
+    "fastq_merge_r2" :
+    {
+	    "mem": 16000
+    },
+    "umi_create_whitelist" :
+    {
+	    "mem": 8000,
+	    "tasks": 8
+    },
+    "trim_read2" :
+    {
+	    "mem": 8000
+    },
+    "align" :
+    {
+	    "mem": 32000,
+      "n": 4
+    },
+    "reads_to_genes" :
+    {
+	    "mem": 48000,
+      "tasks": 4
+    },
+    "sort_gene_bams" :
+    {
+	    "mem" : 8000
+    },
+    "make_gene_DGE_matrix" :
+    {
+	    "mem" : 16000
+    },
+    "reads_to_transcripts" :
+    {
+      "mem": 48000,
+      "tasks": 4
+    },
+    "sort_transcript_bams" :
+    {
+      "mem" : 8000
+    },
+    "make_transcript_DGE_matrix" :
+    {
+      "mem" : 16000
+    },
+    "collect_rna_metrics" :
+    {
+      "mem" : 20000
+    }
+}

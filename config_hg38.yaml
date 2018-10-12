@@ -1,0 +1,25 @@
+#Snakemake configuration file
+
+#project directory this ine needs to be changed
+#proj_dir: /project2/xinhe/alan/downsampling_GBM/
+
+#directory with additional scripts
+scripts: /project2/xinhe/alan/dropseq_pipeline/Scripts/
+
+#logfile
+dir_log: log/
+#Genome index for STAR aligner
+genome_index: /project2/xinhe/alan/refGenome/STAR/
+
+#transcript file
+txn_file: /project2/xinhe/alan/refGenome/hg38_UCSC/gencode.v27.w.introns.gtf
+
+#expected number of cells the value is the upper bound, at least 10% of this value will be lower bound so make sure to adjust it
+cell_num: 3000
+
+#downsampling
+downsample: ["1"]
+
+
+# cell barcode UMI Configuration
+barcode: "CCCCCCCCCCCCNNNNNNNN"

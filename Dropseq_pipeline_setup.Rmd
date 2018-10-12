@@ -1,0 +1,98 @@
+---
+title: "Drop_seq_pipeline_setup"
+author: "Sebastian Pott"
+date: "8/26/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{bash obtain_ref_genomes}
+
+
+#hg38
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/goldenPath/hg38/bigZips/hg38.chromFa.tar.gz .
+#combine into one single drop alternative haplotypes (_alt)
+tar xvzf hg38.chromFa.tar.gz
+cd chroms
+rm *_alt.fa
+cat *.fa > ../hg38_UCSC/hg38_ucsc.fa
+rm -r chroms
+
+#mm10
+#chromFa.tar.gz - The assembly sequence in one file per chromosome.
+#    Repeats from RepeatMasker and Tandem Repeats Finder (with period
+#    of 12 or less) are shown in lower case; non-repeating sequence is
+#    shown in upper case.
+
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/goldenPath/mm10/bigZips/chromFa.tar.gz . 
+#combine into one single drop alternative haplotypes (_alt)
+tar xvzf chromFa.tar.gz
+cat *.fa > mm10_UCSC/mm10_ucsc.fa
+rm *.fa
+
+Release 27 (GRCh38.p10)
+ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz
+
+
+Release M15 (GRCm38.p5)
+ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M15/gencode.vM15.annotation.gtf.gz
+
+
+#Danio ri.. zebrafish
+
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/goldenPath/danRer10/bigZips/danRer10.fa.gz .
+
+gunzip danRer10.fa.gz
+# downloaded danRer10 from UCSC
+RefGene_danRer10-2017-08-28.gtf 
+
+
+
+```
+
+
+
+```{bash prep_STAR_indeces}
+#dropseq reads are ~50bps lonng hence sjdbOverhang = 49
+
+STAR --runThreadN 2 --runMode genomeGenerate --genomeDir hg38_noalt_juncGencodeV27_49 --genomeFastaFiles hg38_UCSC/hg38_ucsc.fa --sjdbGTFfile hg38_UCSC/gencode.v27.annotation.gtf --sjdbOverhang 49
+
+hg38_noalt_juncGencodeV27_49 
+
+
+#dropseq reads are ~50bps lonng hence sjdbOverhang = 49
+STAR --runThreadN 2 --runMode genomeGenerate --genomeDir dr10_noalt_juncRefGene_49 --genomeFastaFiles danRer10_UCSC/danRer10.fa --sjdbGTFfile danRer10_UCSC/RefGene_danRer10-2017-08-28.gtf --sjdbOverhang 49
+
+#and index includeing fluorochromes
+Sebastians-Mac-Pro:STAR_indeces Sebastian$ STAR --runThreadN 2 --runMode genomeGenerate --genomeDir dr10_noalt_juncRefGene_RG_49 --genomeFastaFiles danRer10_UCSC_RG/danRer10_RG.fa --sjdbGTFfile danRer10_UCSC_RG/RefGene_danRer10-2017-08-28_RG.gtf --sjdbOverhang 49
+
+
+
+```
+
+
+```{bash drop_seq_test_run}
+
+#get some of the macosko data:
+/sra/sra-instant/reads/ByExp/sra/SRX/SRX907/SRX907219/SRR1853178/
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
