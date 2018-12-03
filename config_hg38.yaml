@@ -20,6 +20,8 @@ cell_num: 3000
 #downsampling
 downsample: ["1"]
 
+# which feature to count on
+type: ["exon","intron"]
 
 # cell barcode UMI Configuration
 barcode: "CCCCCCCCCCCCNNNNNNNN"

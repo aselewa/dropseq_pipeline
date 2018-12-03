@@ -48,7 +48,7 @@ if not os.path.isdir(dir_log):
 
 samples = set(glob_wildcards(fastq_dir + "{samples}_R1_001.fastq.gz").samples)
 percent = config["downsample"]
-type = ['gene','exon']
+type = config["type"]
 
 rule all:
     input:
@@ -57,10 +57,10 @@ rule all:
         #aligned + "Aligned.SortedByCoordinate.out.bam",
         expand("data/aligned/Aligned.SortedByCoordinate.out.{type}.bam",type=type),
         expand("data/assigned/Aligned.SortedByCoordinate.out.{type}.bam.featureCounts.bam",type=type),
-        expand("data/assigned/Aligned.featureCounts.downsampled_{id}_{type}.bam",id=percent,type=type),
-        expand("data/sorted_reads/assigned_sorted.downsampled_{id}_{type}.bam",id=percent,type=type),
-        expand("data/sorted_reads/assigned_sorted.downsampled_{id}_{type}.bam.bai",id=percent,type=type),
-        expand("output/dge_data/counts.downsampled_{id}_{type}.tsv.gz",id=percent,type=type),
+        #expand("data/assigned/Aligned.featureCounts.downsampled_{id}_{type}.bam",id=percent,type=type),
+        expand("data/sorted_reads/assigned_sorted_{type}.bam",id=percent,type=type),
+        expand("data/sorted_reads/assigned_sorted_{type}.bam.bai",id=percent,type=type),
+        expand("output/dge_data/counts_{type}.tsv.gz",id=percent,type=type),
         #cell_stats + "whitelist.txt",
         #fastqc_dir + "combined_r1_fastqc.zip",
         #qc_data + "Nucleotide_frequency_in_UMIs.pdf",
@@ -180,7 +180,7 @@ rule reads_to_transcripts:
     shell:
         "featureCounts -a {input.features} -o {output.assigned_feat} -R BAM {input.bam} -T {threads} -t {wildcards.type} -g gene_id"
 
-#downsample reads
+downsample reads
 rule downsample:
     input:
         assigned + "Aligned.SortedByCoordinate.out.{type}.bam.featureCounts.bam"
@@ -191,25 +191,25 @@ rule downsample:
 
 rule sort_bams:
     input:
-        assigned + "Aligned.featureCounts.downsampled_{id}_{type}.bam"
+        assigned + "Aligned.SortedByCoordinate.out.{type}.bam.featureCounts.bam"
     output:
-        sorted_reads + "assigned_sorted.downsampled_{id}_{type}.bam"
+        sorted_reads + "assigned_sorted_{type}.bam"
     shell:
-        "samtools sort -o {output} -O bam {input} -T data/sorted_reads/{wildcards.id}_{wildcards.type}_temp"
+        "samtools sort -o {output} -O bam {input} -T data/sorted_reads/{wildcards.type}_temp"
 
 rule index_bams:
     input:
-        sorted_reads + "assigned_sorted.downsampled_{id}_{type}.bam"
+        sorted_reads + "assigned_sorted_{type}.bam"
     output:
-        sorted_reads + "assigned_sorted.downsampled_{id}_{type}.bam.bai"
+        sorted_reads + "assigned_sorted_{type}.bam.bai"
     shell:
         "samtools index {input}"
 
 rule make_DGE_matrix:
     input:
-        sorted_reads + "assigned_sorted.downsampled_{id}_{type}.bam",
-        sorted_reads + "assigned_sorted.downsampled_{id}_{type}.bam.bai"
+        sorted_reads + "assigned_sorted_{type}.bam",
+        sorted_reads + "assigned_sorted_{type}.bam.bai"
     output:
-        dge_data + "counts.downsampled_{id}_{type}.tsv.gz"
+        dge_data + "counts_{type}.tsv.gz"
     shell:
         "umi_tools count --wide-format-cell-counts --per-gene --gene-tag=XT --per-cell -I {input} -S {output}"
